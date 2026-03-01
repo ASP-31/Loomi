@@ -62,7 +62,7 @@ export const FileUpload = ({
   return (
     <div className="w-full" {...getRootProps()}>
       <motion.div
-        onClick={handleClick}
+        // onClick={handleClick}
         whileHover="animate"
         className="group/file relative block w-full cursor-pointer overflow-hidden rounded-lg p-10"
       >
@@ -86,15 +86,14 @@ export const FileUpload = ({
           </p>
           <div className="relative mx-auto mt-10 w-full max-w-xl">
             {files.length > 0 &&
-              files.map((file, idx) => (
-                <motion.div
-                  key={"file" + idx}
-                  layoutId={idx === 0 ? "file-upload" : "file-upload-" + idx}
-                  className={cn(
-                    "relative z-40 mx-auto mt-4 flex w-full flex-col items-start justify-start overflow-hidden rounded-md bg-white p-4 md:h-24 dark:bg-neutral-900",
-                    "shadow-sm",
-                  )}
-                >
+                files.map((file) => (
+                    <motion.div
+                        key={`${file.name}-${file.lastModified}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                        className="relative z-40 mx-auto mt-4 flex w-full flex-col items-start justify-start overflow-hidden rounded-md bg-white p-4 md:h-24 dark:bg-neutral-900 shadow-sm"
+                    >
                   <div className="flex w-full items-center justify-between gap-4">
                     <motion.p
                       initial={{ opacity: 0 }}
@@ -136,14 +135,12 @@ export const FileUpload = ({
                 </motion.div>
               ))}
             {!files.length && (
-              <motion.div
-                layoutId="file-upload"
-                variants={mainVariant}
-                transition={{
-                  type: "spring",
-                  stiffness: 300,
-                  damping: 20,
-                }}
+                <motion.div
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleClick();
+                    }}
+                    layoutId="file-upload"
                 className={cn(
                   "relative z-40 mx-auto mt-4 flex h-32 w-full max-w-[8rem] items-center justify-center rounded-md bg-white group-hover/file:shadow-2xl dark:bg-neutral-900",
                   "shadow-[0px_10px_50px_rgba(0,0,0,0.1)]",
