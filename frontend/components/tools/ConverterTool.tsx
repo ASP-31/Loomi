@@ -27,7 +27,12 @@ export default function ConverterPage() {
     ];
 
     const handleFileChange = (newFiles: File[]) => {
-        if (!newFiles.length) return;
+        if (!newFiles.length) {
+            setFile(null);
+            setOriginalSize(null);
+            setConvertedSize(null);
+            return;
+        }
 
         const selected = newFiles[0];
 
@@ -38,7 +43,7 @@ export default function ConverterPage() {
 
         setFile(selected);
         setOriginalSize(selected.size);
-        setConvertedSize(null); // reset previous result
+        setConvertedSize(null);
     };
 
     const handleConvert = async () => {
@@ -79,7 +84,7 @@ export default function ConverterPage() {
     };
 
     return (
-        <main className="min-h-screen bg-neutral-950 text-neutral-50 py-16 px-6">
+        <main className="min-h-screen bg-neutral-950 text-neutral-50 py-35 px-6">
             <div className="mx-auto w-full max-w-3xl">
                 {/* Loomi Branding Header */}
                 <header className="mb-12">
