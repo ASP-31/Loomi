@@ -52,44 +52,69 @@ export default function Home() {
     };
 
     return (
-        <main className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center p-6">
-            <h1 className="text-4xl font-bold mb-8">Loom Image Converter</h1>
+        <main className="min-h-screen bg-neutral-950 text-neutral-50 py-16 px-6">
+            <div className="mx-auto w-full max-w-3xl">
+                <div className="mb-10">
+                    <span className="mb-2 block text-xs font-bold uppercase tracking-widest text-neutral-500">
+                        Loomi
+                    </span>
+                    <h1 className="mb-2 text-3xl font-bold tracking-tight text-white">
+                        Image Converter
+                    </h1>
+                    <p className="text-neutral-400">
+                        Upload your image to quickly convert it into an optimized format.
+                    </p>
+                </div>
 
-            <div
-                {...getRootProps()}
-                className={`w-full max-w-md border-2 border-dashed rounded-lg p-10 text-center cursor-pointer transition
-        ${isDragActive ? "border-blue-500 bg-gray-800" : "border-gray-600"}`}
-            >
-                <input {...getInputProps()} />
-                {file ? (
-                    <p className="text-green-400">{file.name}</p>
-                ) : (
-                    <p>Drag & Drop an image here</p>
-                )}
+                <div className="rounded-xl border border-neutral-800 bg-neutral-900 p-8 sm:p-10">
+                    <div
+                        {...getRootProps()}
+                        className={`w-full cursor-pointer rounded-lg border border-dashed p-10 text-center transition-all duration-200 
+                        ${
+                            isDragActive
+                                ? "border-neutral-500 bg-neutral-800/80"
+                                : "border-neutral-700 hover:border-neutral-500 hover:bg-neutral-800/40"
+                        }`}
+                    >
+                        <input {...getInputProps()} />
+                        {file ? (
+                            <p className="font-medium text-neutral-200">{file.name}</p>
+                        ) : (
+                            <p className="text-neutral-400">
+                                Drag & drop an image here, or click to browse
+                            </p>
+                        )}
+                    </div>
+
+                    {file && (
+                        <div className="mt-8 flex flex-col items-end gap-4 border-t border-neutral-800 pt-8 sm:flex-row">
+                            <div className="w-full sm:flex-1">
+                                <label className="mb-2 block text-sm font-medium text-neutral-400">
+                                    Format Output
+                                </label>
+                                <select
+                                    className="w-full rounded-lg border border-neutral-700 bg-neutral-800 px-4 py-2.5 text-neutral-200 transition-all duration-200 focus:border-neutral-500 focus:outline-none"
+                                    value={format}
+                                    onChange={(e) => setFormat(e.target.value)}
+                                >
+                                    <option value="webp">WebP</option>
+                                    <option value="png">PNG</option>
+                                    <option value="jpeg">JPEG</option>
+                                    <option value="avif">AVIF</option>
+                                </select>
+                            </div>
+
+                            <button
+                                onClick={handleConvert}
+                                disabled={loading}
+                                className="w-full rounded-lg bg-white px-6 py-2.5 font-semibold text-black transition-all duration-200 hover:bg-neutral-200 disabled:bg-neutral-800 disabled:text-neutral-500 sm:w-auto"
+                            >
+                                {loading ? "Converting..." : "Convert & Download"}
+                            </button>
+                        </div>
+                    )}
+                </div>
             </div>
-
-            {file && (
-                <>
-                    <select
-                        className="mt-6 p-2 bg-gray-800 rounded"
-                        value={format}
-                        onChange={(e) => setFormat(e.target.value)}
-                    >
-                        <option value="webp">WebP</option>
-                        <option value="png">PNG</option>
-                        <option value="jpeg">JPEG</option>
-                        <option value="avif">AVIF</option>
-                    </select>
-
-                    <button
-                        onClick={handleConvert}
-                        disabled={loading}
-                        className="mt-6 bg-blue-600 px-6 py-2 rounded hover:bg-blue-700 transition"
-                    >
-                        {loading ? "Converting..." : "Convert & Download"}
-                    </button>
-                </>
-            )}
         </main>
     );
 }
