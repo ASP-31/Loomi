@@ -25,8 +25,9 @@ export default function ConverterPage() {
         "image/jpeg",
         "image/webp",
         "image/avif",
+        "image/gif",
+        "image/tiff",
     ];
-
     const handleFileChange = (newFiles: File[]) => {
         if (!newFiles.length) {
             setFile(null);
@@ -51,6 +52,14 @@ export default function ConverterPage() {
 
     const handleConvert = async () => {
         if (!file) return;
+        const currentFormat = file.type.split("/")[1];
+
+        if (currentFormat === format) {
+            toast.warning("Already in selected format", {
+                description: "Choose a different format to convert."
+            });
+            return;
+        }
 
         const formData = new FormData();
         formData.append("image", file);
@@ -133,6 +142,8 @@ export default function ConverterPage() {
                                     <option value="png">PNG</option>
                                     <option value="jpeg">JPEG</option>
                                     <option value="avif">AVIF</option>
+                                    <option value="tiff">TIFF</option>
+                                    <option value="gif">GIF</option>
                                 </select>
                             </div>
 

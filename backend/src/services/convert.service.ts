@@ -1,6 +1,13 @@
 import sharp from "sharp";
 
-const allowedFormats = ["png", "jpeg", "webp", "avif"];
+const allowedFormats = [
+    "png",
+    "jpeg",
+    "webp",
+    "avif",
+    "gif",
+    "tiff",
+];
 
 export const convertImage = async (
     buffer: Buffer,
@@ -10,9 +17,30 @@ export const convertImage = async (
         throw new Error("Invalid format selected");
     }
 
-    const converted = await sharp(buffer)
-        .toFormat(format as keyof sharp.FormatEnum)
-        .toBuffer();
+    let image = sharp(buffer);
 
-    return converted;
+    switch (format) {
+        case "png":
+            image = image.png();
+            break;
+        case "jpeg":
+            image = image.jpeg();
+            break;
+        case "webp":
+            image = image.webp();
+            break;
+        case "avif":
+            image = image.avif();
+            break;
+        case "gif":
+            image = image.gif();
+            break;
+        case "tiff":
+            image = image.tiff();
+            break;
+        default:
+            throw new Error("Invalid format selected");
+    }
+
+    return await image.toBuffer();
 };

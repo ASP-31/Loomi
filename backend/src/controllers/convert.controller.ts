@@ -17,6 +17,15 @@ export const handleConvert = async (
             req.file.buffer,
             format
         );
+        const mimeMap: Record<string, string> = {
+            jpeg: "image/jpeg",
+            png: "image/png",
+            webp: "image/webp",
+            avif: "image/avif",
+            gif: "image/gif",
+            tiff: "image/tiff",
+            bmp: "image/bmp",
+        };
 
         res.set({
             "Content-Type": `image/${format}`,

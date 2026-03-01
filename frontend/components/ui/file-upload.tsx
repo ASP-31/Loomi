@@ -57,10 +57,12 @@ export const FileUpload = ({
       "image/jpeg": [],
       "image/webp": [],
       "image/avif": [],
+      "image/gif": [],
+      "image/tiff": [],
     },
     onDrop: handleFileChange,
     onDropRejected: () => {
-      alert("Only PNG, JPEG, WEBP and AVIF files are allowed.");
+      alert("Supported formats: PNG, JPEG, WEBP, AVIF, GIF, TIFF.");
     },
   });
   const removeFile = () => {
@@ -77,7 +79,7 @@ export const FileUpload = ({
         <input
             ref={fileInputRef}
             type="file"
-            accept="image/png,image/jpeg,image/webp,image/avif"
+            accept="image/png,image/jpeg,image/webp,image/avif,image/gif,image/tiff"
             onChange={(e) => handleFileChange(Array.from(e.target.files || []))}
             className="hidden"
         />
