@@ -1,13 +1,21 @@
 .pill-nav-container {
+  /* Use fixed if you want it to stay at the top while scrolling */
   position: fixed;
-  top: 40px;
+  top: 24px;
+
+  /* The Magic Centering Combo */
   left: 50%;
   transform: translateX(-50%);
-  z-index: 999;
+
+  /* Layout */
   display: flex;
   justify-content: center;
-}
+  align-items: center;
+  z-index: 1000;
 
+  /* Ensure it doesn't stretch to full width unless on mobile */
+  width: max-content;
+}
 @media (max-width: 768px) {
   .pill-nav-container {
     width: 100%;
@@ -20,18 +28,10 @@
   --logo: 36px;
   --pill-pad-x: 18px;
   --pill-gap: 3px;
-
+  width: max-content;
   display: flex;
   align-items: center;
-  gap: 8px;
-
-  padding: 6px 10px;
-
-  /* CHANGE THIS LINE */
-  background: var(--base, #000);
-
-  border-radius: 9999px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
@@ -133,7 +133,6 @@
   display: inline-block;
   line-height: 1;
   will-change: transform;
-  transition: opacity 0.3s ease;
 }
 
 .pill .pill-label-hover {
@@ -144,15 +143,6 @@
   z-index: 3;
   display: inline-block;
   will-change: transform, opacity;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.pill:hover .pill-label {
-  opacity: 0;
-}
-
-.pill:hover .pill-label-hover {
-  opacity: 1;
 }
 
 .pill.is-active::after {

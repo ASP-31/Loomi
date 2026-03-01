@@ -17,10 +17,10 @@ export default function Navbar() {
             className="custom-nav"
             activeHref={pathname}
             ease="power2.easeOut"
-            baseColor="#000000"
+            baseColor="#111111"
             pillColor="#ffffff"
+            pillTextColor="#111111"
             hoveredPillTextColor="#ffffff"
-            pillTextColor="#000000"
             theme="light"
             initialLoadAnimation={false}
         />
