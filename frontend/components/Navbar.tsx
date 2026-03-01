@@ -1,19 +1,28 @@
-import Link from "next/link";
+"use client";
+
+import { usePathname } from "next/navigation";
+import PillNav from "@/components/ui/PillNav";
 
 export default function Navbar() {
-    return (
-        <header className="border-b border-white/10">
-            <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-                <Link href="/frontend/public" className="text-xl font-semibold">
-                    Loomi
-                </Link>
+    const pathname = usePathname();
 
-                <nav className="hidden md:flex gap-6 text-sm text-white/70">
-                    <Link href="/tools/converter" className="hover:text-white transition">
-                        Converter
-                    </Link>
-                </nav>
-            </div>
-        </header>
+    return (
+        <PillNav
+            logo="/loomi.webp"
+            logoAlt="Loomi Logo"
+            items={[
+                { label: "Home", href: "/" },
+                { label: "Converter", href: "/tools/converter" },
+            ]}
+            className="custom-nav"
+            activeHref={pathname}
+            ease="power2.easeOut"
+            baseColor="#000000"
+            pillColor="#ffffff"
+            hoveredPillTextColor="#ffffff"
+            pillTextColor="#000000"
+            theme="light"
+            initialLoadAnimation={false}
+        />
     );
 }
