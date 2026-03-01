@@ -5,7 +5,8 @@ import { FileUpload } from "@/components/ui/file-upload"; // Ensure this path ma
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-
+const API_URL =
+    process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 export default function ConverterPage() {
     const [file, setFile] = useState<File | null>(null);
     const [format, setFormat] = useState("webp");
@@ -68,7 +69,7 @@ export default function ConverterPage() {
         setLoading(true);
 
         try {
-            const response = await fetch("http://localhost:5000/api/convert", {
+            const response = await fetch(`${API_URL}/api/convert`, {
                 method: "POST",
                 body: formData,
             });
