@@ -18,17 +18,18 @@ export default function Home() {
         "image/avif",
     ];
 
-    const handleFileChange = (files: File[]) => {
-        if (files.length === 0) return;
+    const handleFileChange = (newFiles: File[]) => {
+        if (!newFiles.length) return;
 
-        const selected = files[0];
+        const file = newFiles[0];
 
-        if (!allowedTypes.includes(selected.type)) {
+        if (!allowedTypes.includes(file.type)) {
             alert("Only PNG, JPEG, WEBP and AVIF files are allowed.");
             return;
         }
 
-        setFile(selected);
+        setFiles([file]); // replace, don’t append
+        onChange && onChange([file]);
     };
 
     const handleConvert = async () => {

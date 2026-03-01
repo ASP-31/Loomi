@@ -46,16 +46,16 @@ export const FileUpload = ({
   const { getRootProps, isDragActive } = useDropzone({
     multiple: false,
     noClick: true,
+    maxFiles: 1,
     accept: {
       "image/png": [],
       "image/jpeg": [],
       "image/webp": [],
       "image/avif": [],
     },
-    maxFiles: 1,
     onDrop: handleFileChange,
-    onDropRejected: (errors) => {
-      console.log("Rejected:", errors);
+    onDropRejected: () => {
+      alert("Only PNG, JPEG, WEBP and AVIF files are allowed.");
     },
   });
 
@@ -67,11 +67,11 @@ export const FileUpload = ({
         className="group/file relative block w-full cursor-pointer overflow-hidden rounded-lg p-10"
       >
         <input
-          ref={fileInputRef}
-          id="file-upload-handle"
-          type="file"
-          onChange={(e) => handleFileChange(Array.from(e.target.files || []))}
-          className="hidden"
+            ref={fileInputRef}
+            type="file"
+            accept="image/png,image/jpeg,image/webp,image/avif"
+            onChange={(e) => handleFileChange(Array.from(e.target.files || []))}
+            className="hidden"
         />
         <div className="absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,white,transparent)]">
           <GridPattern />
