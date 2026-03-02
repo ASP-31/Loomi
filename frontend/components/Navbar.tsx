@@ -12,7 +12,8 @@ export default function Navbar() {
             logoAlt="Loomi Logo"
             items={[
                 { label: "Home", href: "/" },
-                { label: "Converter", href: "/tools/converter" },
+                { label: "Tools", href: "/tools" },
+                { label: "Docs", href: "/docs" },
             ]}
             className="custom-nav"
             activeHref={pathname}
