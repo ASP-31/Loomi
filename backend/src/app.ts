@@ -15,6 +15,6 @@ app.get("/", (_req, res) => {
 
 app.use("/api/convert", convertRoutes);
 app.use("/api/compress", compressRoutes);
-app.use("/api/background-remove", backgroundRoutes);
+app.use("/api/background", backgroundRoutes);
 
 export default app;

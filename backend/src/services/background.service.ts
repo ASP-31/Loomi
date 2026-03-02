@@ -1,9 +1,21 @@
-import { removeBackground } from "@imgly/background-removal-node";
+import axios from "axios";
+import FormData from "form-data";
 
-export async function removeBg(imageBuffer: Buffer): Promise<Buffer> {
-    const output = await removeBackground(imageBuffer, {
-        model: "medium",
-    });
+export async function removeBgWithPython(imageBuffer: Buffer): Promise<Buffer> {
+  const formData = new FormData();
+  formData.append("file", imageBuffer, {
+    filename: "image.png",
+    contentType: "image/png",
+  });
 
-    return Buffer.from(output);
+  const response = await axios.post(
+    "http://127.0.0.1:8000/remove-bg",
+    formData,
+    {
+      headers: formData.getHeaders(),
+      responseType: "arraybuffer",
+    }
+  );
+
+  return Buffer.from(response.data);
 }

@@ -60,7 +60,7 @@ export default function BackgroundRemovalTool() {
 
         try {
             const response = await fetch(
-                `${API_URL}/api/background-remove`,
+                `${API_URL}/api/background`,
                 {
                     method: "POST",
                     body: formData,
