@@ -8,6 +8,8 @@
   <img src="https://img.shields.io/badge/TypeScript-Strict-blue?style=for-the-badge&logo=typescript" />
   <img src="https://img.shields.io/badge/Express-API-black?style=for-the-badge&logo=express" />
   <img src="https://img.shields.io/badge/Sharp-Image_Engine-111111?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/FastAPI-ML_Service-009688?style=for-the-badge&logo=fastapi" />
+</p>
 </p>
 ---
 
@@ -21,31 +23,47 @@ Currently in active development.
 
 ## ✨ Current Features
 
-* Image format conversion (PNG, JPEG, WebP, AVIF, GIF, TIFF)
-* Drag & drop upload interface
-* Image-only validation (frontend + backend)
-* Original vs converted file size comparison
-* Compression savings percentage display
-* Clean industrial dark UI
+### 🖼 Image Converter
+- PNG, JPEG, WebP, AVIF, GIF, TIFF support
+- Size comparison (before vs after)
+- Memory-based processing
+- Strict validation
+
+### 🗜 Image Compressor
+- Quality-based compression
+- Savings percentage display
+- Clean processing feedback
+
+### 🎯 Background Removal (ML Powered)
+- AI-based subject extraction
+- Transparent PNG output
+- Python FastAPI microservice
+- Node ↔ ML service integration
 
 ---
 
 ## 🛠 Tech Stack
 
 ### Frontend
+- Next.js (App Router)
+- TypeScript
+- Tailwind CSS
+- Framer Motion
+- Modular tool-based UI architecture
 
-* Next.js (App Router)
-* TypeScript
-* Tailwind CSS
-* Framer Motion
+### Backend (API Layer)
+- Express
+- TypeScript
+- Sharp (image processing engine)
+- Multer (memory-based file handling)
+- Layered architecture (routes → controllers → services → middleware)
+- Axios (internal ML service communication)
 
-### Backend
-
-* Express
-* TypeScript
-* Sharp (image processing)
-* Multer (memory-based file handling)
-* Layered architecture (routes, controllers, services, middleware)
+### ML Microservice
+- FastAPI
+- Python
+- Background removal model
+- Isolated microservice architecture
 
 ---
 
@@ -63,12 +81,17 @@ Loomi/
 │   │   └── server.ts
 │   └── package.json
 │
-└── frontend/
-    ├── src/
-    │   ├── app/
-    │   ├── components/
-    │   └── lib/
-    └── package.json
+├── frontend/
+│    ├── src/
+│    │   ├── app/
+│    │   ├── components/
+│    │   └── lib/
+│    └── package.json
+└──ml-service/
+    │
+    ├──app.py
+    │
+    └──requirements.txt
 ```
 
 The backend follows a scalable layered architecture to allow future expansion (compressor, background remover, metadata tools, etc.).
@@ -77,9 +100,49 @@ The backend follows a scalable layered architecture to allow future expansion (c
 
 ## 🚀 Running Locally
 
-### 1️⃣ Backend
+Loomi uses a microservice architecture.
+You must run **three services** in separate terminals.
+
+---
+
+### 1️⃣ ML Service (Background Removal)
+
+```bash
+cd ml-service
+
+# create virtual environment (first time only)
+python -m venv venv
+
+# activate environment
+# macOS / Linux:
+source venv/bin/activate
+# Windows:
+venv\Scripts\activate
+
+# install dependencies
+pip install -r requirements.txt
+
+# start FastAPI server
+uvicorn app:app --reload --port 8000
+```
+
+Runs on:
 
 ```
+http://localhost:8000
+```
+
+Swagger docs:
+
+```
+http://localhost:8000/docs
+```
+
+---
+
+### 2️⃣ Backend API (Express)
+
+```bash
 cd backend
 npm install
 npm run dev
@@ -93,9 +156,9 @@ http://localhost:5000
 
 ---
 
-### 2️⃣ Frontend
+### 3️⃣ Frontend (Next.js)
 
-```
+```bash
 cd frontend
 npm install
 npm run dev
@@ -109,11 +172,24 @@ http://localhost:3000
 
 ---
 
+## ✅ Required Order
+
+Start services in this order:
+
+1. ML service
+2. Backend
+3. Frontend
+
+If the ML service is not running, background removal will return a 500 error.
+
+
+---
+
 ## 📌 Roadmap
 
 * [x] Image Converter
 * [x] Image Compressor
-* [ ] Background Remover
+* [x] Background Remover
 * [ ] Resize Tool
 * [ ] Crop Tool
 * [ ] Metadata Stripper
@@ -126,11 +202,15 @@ http://localhost:3000
 
 Loomi aims to become a modern, developer-grade image toolkit with:
 
-* Clean architecture
-* Strong validation
-* Performance-focused processing
-* Scalable backend structure
-* Premium UI experience
+- Clean architecture
+- Strong validation
+- Performance-focused processing
+- ML-powered extensibility
+- Microservice-ready backend
+- Premium UI experience
+
+This is not just an image tool — it is a modular image processing platform.
+
 
 ---
 
