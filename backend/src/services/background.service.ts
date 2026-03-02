@@ -1,12 +1,9 @@
 import { removeBackground } from "@imgly/background-removal-node";
-import fs from "fs/promises";
 
-export async function removeBg(filePath: string): Promise<Buffer> {
-    const imageBuffer = await fs.readFile(filePath);
-
-    const outputBuffer = await removeBackground(imageBuffer, {
+export async function removeBg(imageBuffer: Buffer): Promise<Buffer> {
+    const output = await removeBackground(imageBuffer, {
         model: "medium",
     });
 
-    return Buffer.from(outputBuffer);
+    return Buffer.from(output);
 }

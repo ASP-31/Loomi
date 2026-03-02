@@ -4,3 +4,8 @@ dist
 .next
 .idea
 .DS_Store
+
+# Python ML service
+ml-service/venv/
+ml-service/__pycache__/
+ml-service/*.pyc
