@@ -161,51 +161,41 @@ export default function CompressorTool() {
                             <p>
                                 Original Size:{" "}
                                 <span className="text-neutral-200 font-medium">
-                  {formatBytes(originalSize)}
-                </span>
+                                    {formatBytes(originalSize)}
+                                  </span>
                             </p>
 
-                            {compressedSize && (
+                            {compressedSize && originalSize && (
                                 <>
                                     <p>
                                         Compressed Size:{" "}
                                         <span className="text-neutral-200 font-medium">
-                      {formatBytes(compressedSize)}
-                    </span>
+                                        {formatBytes(compressedSize)}
+                                      </span>
                                     </p>
-                                    {compressedSize && originalSize && (
-                                        <>
-                                            <p>
-                                                Compressed Size:{" "}
-                                                <span className="text-neutral-200 font-medium">
-        {formatBytes(compressedSize)}
-      </span>
-                                            </p>
 
-                                            {compressedSize < originalSize ? (
-                                                <p>
-                                                    Saved:{" "}
-                                                    <span className="text-green-400 font-medium">
-          {(
-              ((originalSize - compressedSize) / originalSize) *
-              100
-          ).toFixed(1)}
-                                                        %
-        </span>
-                                                </p>
-                                            ) : (
-                                                <p>
-                                                    Increased by:{" "}
-                                                    <span className="text-red-400 font-medium">
-          {(
-              ((compressedSize - originalSize) / originalSize) *
-              100
-          ).toFixed(1)}
-                                                        %
-        </span>
-                                                </p>
-                                            )}
-                                        </>
+                                    {compressedSize < originalSize ? (
+                                        <p>
+                                            Saved:{" "}
+                                            <span className="text-green-400 font-medium">
+                                              {(
+                                                  ((originalSize - compressedSize) / originalSize) *
+                                                  100
+                                              ).toFixed(1)}
+                                                                                %
+                                            </span>
+                                        </p>
+                                    ) : (
+                                        <p>
+                                            Increased by:{" "}
+                                            <span className="text-red-400 font-medium">
+                                              {(
+                                                  ((compressedSize - originalSize) / originalSize) *
+                                                  100
+                                              ).toFixed(1)}
+                                                                                %
+                                            </span>
+                                        </p>
                                     )}
                                 </>
                             )}
