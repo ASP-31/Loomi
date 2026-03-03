@@ -282,6 +282,16 @@ const LightPillar: React.FC<LightPillarProps> = ({
       rafRef.current = requestAnimationFrame(animate);
     };
     rafRef.current = requestAnimationFrame(animate);
+    const handleVisibility = () => {
+      if (document.hidden && rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      } else if (!document.hidden && !rafRef.current) {
+        rafRef.current = requestAnimationFrame(animate);
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibility);
 
     let resizeTimeout: number | null = null;
     const handleResize = () => {
@@ -343,19 +353,6 @@ const LightPillar: React.FC<LightPillarProps> = ({
     webGLSupported,
     quality
   ]);
-  useEffect(() => {
-    const handleVisibility = () => {
-      if (document.hidden && rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-        rafRef.current = null;
-      } else if (!document.hidden && !rafRef.current) {
-        rafRef.current = requestAnimationFrame(animate);
-      }
-    };
-
-    document.addEventListener("visibilitychange", handleVisibility);
-    return () => document.removeEventListener("visibilitychange", handleVisibility);
-  }, []);
 
   if (!webGLSupported) {
     return (
