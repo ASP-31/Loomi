@@ -5,7 +5,7 @@ import { FileUpload } from "@/components/ui/file-upload";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-
+import { MorphingSquare } from "@/components/ui/morphing-square";
 const API_URL =
     process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
@@ -80,6 +80,16 @@ export default function CompressorTool() {
 
     return (
         <main className="min-h-screen bg-neutral-950 text-neutral-50 py-35 px-6">
+            {loading && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+                    <div className="flex flex-col items-center gap-6">
+                        <MorphingSquare />
+                        <p className="text-sm text-neutral-300 tracking-wide">
+                            Compressing image...
+                        </p>
+                    </div>
+                </div>
+            )}
             <div className="mx-auto w-full max-w-3xl">
 
                 {/* Header */}
@@ -150,7 +160,7 @@ export default function CompressorTool() {
                                     "disabled:bg-neutral-800 disabled:text-neutral-500 disabled:cursor-not-allowed"
                                 )}
                             >
-                                {loading ? "Processing..." : "Compress & Download"}
+                                Compress & Download
                             </button>
                         </motion.div>
                     )}
