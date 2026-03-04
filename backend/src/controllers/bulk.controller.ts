@@ -8,8 +8,14 @@ import { stripMetadata } from "../services/stripMetadata.service"
 
 export const bulkProcess = async (req: Request, res: Response) => {
     try {
+
         const files = req.files as Express.Multer.File[]
         const operation = (req.query.operation as string) || "compress"
+
+        const format = (req.query.format as string) || "jpeg"
+        const quality = Number(req.query.quality) || 80
+        const width = req.query.width ? Number(req.query.width) : undefined
+        const height = req.query.height ? Number(req.query.height) : undefined
 
         if (!files || files.length === 0) {
             return res.status(400).json({
@@ -43,8 +49,8 @@ export const bulkProcess = async (req: Request, res: Response) => {
                 case "compress":
                     processedBuffer = await compressImage(
                         file.buffer,
-                        "jpeg",
-                        80
+                        format,
+                        quality
                     )
                     filename = file.originalname
                     break
@@ -52,7 +58,7 @@ export const bulkProcess = async (req: Request, res: Response) => {
                 case "resize":
                     processedBuffer = await resizeImage(
                         file.buffer,
-                        { width: 800 }
+                        { width, height }
                     )
                     filename = file.originalname
                     break
@@ -60,16 +66,14 @@ export const bulkProcess = async (req: Request, res: Response) => {
                 case "convert":
                     processedBuffer = await convertImage(
                         file.buffer,
-                        "png"
+                        format
                     )
                     filename =
-                        file.originalname.split(".")[0] + ".png"
+                        file.originalname.split(".")[0] + "." + format
                     break
 
                 case "stripMetadata":
-                    processedBuffer = await stripMetadata(
-                        file.buffer
-                    )
+                    processedBuffer = await stripMetadata(file.buffer)
                     filename = file.originalname
                     break
 
@@ -83,6 +87,7 @@ export const bulkProcess = async (req: Request, res: Response) => {
         await archive.finalize()
 
     } catch (error) {
+
         console.error("Bulk processing error:", error)
 
         if (!res.headersSent) {
@@ -90,5 +95,6 @@ export const bulkProcess = async (req: Request, res: Response) => {
                 error: "Bulk processing failed"
             })
         }
+
     }
 }
