@@ -48,7 +48,7 @@ export default function ToolsPage() {
     ];
 
     return (
-        <main className="min-h-screen bg-neutral-950 text-neutral-50 flex flex-col items-center justify-center px-6 relative overflow-hidden">
+        <main className="min-h-screen bg-neutral-950 text-neutral-50 flex flex-col items-center justify-center px-6 pt-40 pb-20 relative overflow-hidden">
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-white/5 blur-[120px] rounded-full pointer-events-none" />
             <div className="absolute top-1/2 left-1/2 -translate-x-1/4 -translate-y-1/4 w-[400px] h-[400px] bg-neutral-400/5 blur-[120px] rounded-full pointer-events-none" />
 
