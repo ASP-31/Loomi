@@ -8,7 +8,6 @@ import { stripMetadata } from "../services/stripMetadata.service"
 
 export const bulkProcess = async (req: Request, res: Response) => {
     try {
-
         const files = req.files as Express.Multer.File[]
         const operation = (req.query.operation as string) || "compress"
 
@@ -42,22 +41,35 @@ export const bulkProcess = async (req: Request, res: Response) => {
             switch (operation) {
 
                 case "compress":
-                    processedBuffer = await compressImage(file.buffer)
+                    processedBuffer = await compressImage(
+                        file.buffer,
+                        "jpeg",
+                        80
+                    )
                     filename = file.originalname
                     break
 
                 case "resize":
-                    processedBuffer = await resizeImage(file.buffer, 800)
+                    processedBuffer = await resizeImage(
+                        file.buffer,
+                        { width: 800 }
+                    )
                     filename = file.originalname
                     break
 
                 case "convert":
-                    processedBuffer = await convertImage(file.buffer, "png")
-                    filename = file.originalname.split(".")[0] + ".png"
+                    processedBuffer = await convertImage(
+                        file.buffer,
+                        "png"
+                    )
+                    filename =
+                        file.originalname.split(".")[0] + ".png"
                     break
 
                 case "stripMetadata":
-                    processedBuffer = await stripMetadata(file.buffer)
+                    processedBuffer = await stripMetadata(
+                        file.buffer
+                    )
                     filename = file.originalname
                     break
 
@@ -71,7 +83,6 @@ export const bulkProcess = async (req: Request, res: Response) => {
         await archive.finalize()
 
     } catch (error) {
-
         console.error("Bulk processing error:", error)
 
         if (!res.headersSent) {
