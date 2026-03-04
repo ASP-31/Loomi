@@ -1,5 +1,6 @@
 import { Request, Response } from "express"
-import { processBulkImages } from "../services/bulk.service"
+import archiver from "archiver"
+import sharp from "sharp"
 
 export const bulkProcess = async (req: Request, res: Response) => {
     try {
@@ -11,21 +12,42 @@ export const bulkProcess = async (req: Request, res: Response) => {
             })
         }
 
-        const archive = await processBulkImages(files)
-
         res.setHeader("Content-Type", "application/zip")
         res.setHeader(
             "Content-Disposition",
             "attachment; filename=loomi-bulk-output.zip"
         )
 
+        const archive = archiver("zip", {
+            zlib: { level: 9 }
+        })
+
+        archive.on("error", (err) => {
+            throw err
+        })
+
         archive.pipe(res)
+
+        for (const file of files) {
+            const processed = await sharp(file.buffer)
+                .jpeg({ quality: 70 })
+                .toBuffer()
+
+            const filename =
+                file.originalname.split(".")[0] + "-compressed.jpg"
+
+            archive.append(processed, { name: filename })
+        }
+
+        archive.finalize()
 
     } catch (error) {
         console.error("Bulk processing error:", error)
 
-        res.status(500).json({
-            error: "Bulk processing failed"
-        })
+        if (!res.headersSent) {
+            res.status(500).json({
+                error: "Bulk processing failed"
+            })
+        }
     }
 }

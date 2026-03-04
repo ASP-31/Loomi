@@ -12,7 +12,7 @@ const upload = multer({
 })
 
 router.post(
-    "/bulk",
+    "/",
     upload.array("images", 20),
     bulkProcess
 )
