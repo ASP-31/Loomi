@@ -1,4 +1,4 @@
-import {Crop, Image as ImageIcon, Maximize2, Minimize2, Wand2} from "lucide-react";
+import {Crop, Image as ImageIcon, Maximize2, Minimize2, ShieldOff, Wand2} from "lucide-react";
 import GlassIcons from "@/components/GlassIcons";
 
 export default function ToolsPage() {
@@ -32,6 +32,12 @@ export default function ToolsPage() {
             color: "rgba(163, 163, 163, 1)",
             label: "Image Resizer",
             href: "/tools/resizer"
+        },
+        {
+            icon: <ShieldOff className="w-6 h-6" />,
+            color: "rgba(163, 163, 163, 1)",
+            label: "Metadata Stripper",
+            href: "/tools/strip-metadata"
         },
     ];
 
