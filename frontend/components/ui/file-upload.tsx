@@ -28,9 +28,11 @@ const secondaryVariant = {
 };
 
 export const FileUpload = ({
-  onChange,
-}: {
+                             onChange,
+                             multiple = false,
+                           }: {
   onChange?: (files: File[]) => void;
+  multiple?: boolean;
 }) => {
   const [files, setFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -38,10 +40,16 @@ export const FileUpload = ({
   const handleFileChange = (newFiles: File[]) => {
     if (!newFiles.length) return;
 
-    const selected = newFiles[0];
+    let updatedFiles: File[];
 
-    setFiles([selected]);
-    onChange && onChange([selected]);
+    if (multiple) {
+      updatedFiles = [...files, ...newFiles];
+    } else {
+      updatedFiles = [newFiles[0]];
+    }
+
+    setFiles(updatedFiles);
+    onChange && onChange(updatedFiles);
   };
 
   const handleClick = () => {
@@ -49,9 +57,9 @@ export const FileUpload = ({
   };
 
   const { getRootProps, isDragActive } = useDropzone({
-    multiple: false,
+    multiple: multiple,
     noClick: true,
-    maxFiles: 1,
+    maxFiles: multiple ? 20 : 1,
     accept: {
       "image/png": [],
       "image/jpeg": [],
@@ -65,9 +73,10 @@ export const FileUpload = ({
       alert("Supported formats: PNG, JPEG, WEBP, AVIF, GIF, TIFF.");
     },
   });
-  const removeFile = () => {
-    setFiles([]);
-    onChange && onChange([]);
+  const removeFile = (index: number) => {
+    const updated = files.filter((_, i) => i !== index);
+    setFiles(updated);
+    onChange && onChange(updated);
   };
 
   return (
@@ -79,6 +88,7 @@ export const FileUpload = ({
         <input
             ref={fileInputRef}
             type="file"
+            multiple={multiple}
             accept="image/png,image/jpeg,image/webp,image/avif,image/gif,image/tiff"
             onChange={(e) => handleFileChange(Array.from(e.target.files || []))}
             className="hidden"
@@ -96,7 +106,7 @@ export const FileUpload = ({
           </p>
           <div className="relative mx-auto mt-10 w-full max-w-xl">
             {files.length > 0 &&
-                files.map((file) => (
+                files.map((file, index) => (
                     <motion.div
                         key={`${file.name}-${file.lastModified}`}
                         whileHover="animate"
@@ -133,7 +143,7 @@ export const FileUpload = ({
                           <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                removeFile();
+                                removeFile(index);
                               }}
                               className="group p-1 rounded-md hover:bg-red-500/10 transition"
                           >

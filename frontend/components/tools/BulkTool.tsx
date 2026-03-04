@@ -1,205 +1,287 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
+import { FileUpload } from "@/components/ui/file-upload";
+import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
+import { toast } from "sonner";
+import { MorphingSquare } from "@/components/ui/morphing-square";
+import ArrowNarrowLeftIcon from "@/components/ui/arrow-narrow-left-icon";
+import { useRouter } from "next/navigation";
 
-export default function BulkTool() {
+const API_URL =
+    process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
-    const [files, setFiles] = useState<File[]>([])
-    const [loading, setLoading] = useState(false)
+export default function BulkPage() {
 
-    const [operation, setOperation] = useState("compress")
+    const router = useRouter();
 
-    const [quality, setQuality] = useState(80)
-    const [format, setFormat] = useState("png")
-    const [width, setWidth] = useState(800)
-    const [height, setHeight] = useState(0)
+    const [files, setFiles] = useState<File[]>([]);
+    const [loading, setLoading] = useState(false);
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (!e.target.files) return
-        setFiles(Array.from(e.target.files))
-    }
+    const [operation, setOperation] = useState("compress");
+    const [quality, setQuality] = useState(80);
+    const [format, setFormat] = useState("png");
+    const [width, setWidth] = useState(800);
+    const [height, setHeight] = useState(0);
 
-    const handleUpload = async () => {
+    const handleFileChange = (newFiles: File[]) => {
+        if (!newFiles.length) {
+            setFiles([]);
+            return;
+        }
 
-        if (files.length === 0) return
+        setFiles(newFiles);
+    };
 
-        const formData = new FormData()
+    const handleProcess = async () => {
+
+        if (!files.length) return;
+
+        const formData = new FormData();
 
         files.forEach((file) => {
-            formData.append("images", file)
-        })
+            formData.append("images", file);
+        });
 
-        let url = `http://localhost:5000/api/bulk?operation=${operation}`
+        let url = `${API_URL}/api/bulk?operation=${operation}`;
 
         if (operation === "compress") {
-            url += `&quality=${quality}&format=jpeg`
+            url += `&quality=${quality}&format=jpeg`;
         }
 
         if (operation === "convert") {
-            url += `&format=${format}`
+            url += `&format=${format}`;
         }
 
         if (operation === "resize") {
-            url += `&width=${width}&height=${height}`
+            url += `&width=${width}&height=${height}`;
         }
 
-        setLoading(true)
+        setLoading(true);
 
         try {
 
             const res = await fetch(url, {
                 method: "POST",
-                body: formData
-            })
+                body: formData,
+            });
 
-            const blob = await res.blob()
+            if (!res.ok) {
+                toast.error("Bulk processing failed");
+                setLoading(false);
+                return;
+            }
 
-            const downloadUrl = window.URL.createObjectURL(blob)
+            const blob = await res.blob();
 
-            const a = document.createElement("a")
-            a.href = downloadUrl
-            a.download = "loomi-bulk-output.zip"
-            a.click()
+            const downloadUrl = window.URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = downloadUrl;
+            a.download = "loomi-bulk-output.zip";
+            a.click();
+
+            toast.success("Processing complete!");
 
         } catch (err) {
-            console.error(err)
-        }
 
-        setLoading(false)
-    }
+            toast.error("Server unavailable");
+
+        } finally {
+
+            setLoading(false);
+
+        }
+    };
 
     return (
-        <div className="max-w-2xl mx-auto space-y-8">
+        <main className="min-h-screen bg-neutral-950 text-neutral-50 py-35 px-6">
 
-            <h1 className="text-3xl font-bold text-white">
-                Bulk Image Processor
-            </h1>
+            {/* Loading overlay */}
 
-            {/* Operation */}
+            {loading && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+                    <div className="flex flex-col items-center gap-6">
+                        <MorphingSquare />
+                        <p className="text-sm text-neutral-300 tracking-wide">
+                            Processing images...
+                        </p>
+                    </div>
+                </div>
+            )}
 
-            <div className="space-y-2">
+            <div className="mx-auto w-full max-w-3xl">
 
-                <label className="text-gray-400 text-sm">
-                    Operation
-                </label>
+                {/* Header */}
 
-                <select
-                    value={operation}
-                    onChange={(e) => setOperation(e.target.value)}
-                    className="w-full p-3 rounded-lg bg-neutral-900 border border-neutral-700 text-white"
-                >
-                    <option value="compress">Compress</option>
-                    <option value="resize">Resize</option>
-                    <option value="convert">Convert</option>
-                    <option value="stripMetadata">Strip Metadata</option>
-                </select>
+                <header className="mb-12 flex items-center gap-4">
+
+                    <button
+                        onClick={() => router.back()}
+                        className="group flex items-center justify-center w-10 h-10"
+                    >
+                        <ArrowNarrowLeftIcon className="w-5 h-5 text-neutral-400 group-hover:text-white transition-colors duration-200" />
+                    </button>
+
+                    <div>
+                        <h1 className="text-4xl font-bold tracking-tighter text-white">
+                            Bulk Processor
+                        </h1>
+
+                        <p className="mt-2 text-neutral-400">
+                            Process multiple images simultaneously with Loomi.
+                        </p>
+                    </div>
+
+                </header>
+
+                {/* Main Container */}
+
+                <div className="rounded-2xl border border-neutral-800 bg-neutral-900/40 p-2 shadow-2xl">
+
+                    {/* Upload Area */}
+
+                    <div className="w-full bg-neutral-950 rounded-xl border border-neutral-800 overflow-hidden">
+                        <FileUpload onChange={handleFileChange} multiple />
+                    </div>
+
+                    {files.length > 0 && (
+
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="flex flex-col gap-6 p-8 border-t border-neutral-800 mt-2"
+                        >
+
+                            {/* Operation */}
+
+                            <div className="flex flex-col">
+
+                                <label className="text-[10px] uppercase tracking-widest font-bold text-neutral-500 mb-2">
+                                    Operation
+                                </label>
+
+                                <select
+                                    value={operation}
+                                    onChange={(e) => setOperation(e.target.value)}
+                                    className="bg-neutral-900 border border-neutral-800 text-sm rounded-lg px-4 py-2.5 text-neutral-200"
+                                >
+                                    <option value="compress">Compress</option>
+                                    <option value="resize">Resize</option>
+                                    <option value="convert">Convert</option>
+                                    <option value="stripMetadata">Strip Metadata</option>
+                                </select>
+
+                            </div>
+
+                            {/* Dynamic controls */}
+
+                            {operation === "compress" && (
+
+                                <div>
+
+                                    <label className="text-[10px] uppercase tracking-widest font-bold text-neutral-500 mb-2 block">
+                                        Quality
+                                    </label>
+
+                                    <input
+                                        type="range"
+                                        min="1"
+                                        max="100"
+                                        value={quality}
+                                        onChange={(e) => setQuality(Number(e.target.value))}
+                                        className="w-full"
+                                    />
+
+                                </div>
+
+                            )}
+
+                            {operation === "convert" && (
+
+                                <div>
+
+                                    <label className="text-[10px] uppercase tracking-widest font-bold text-neutral-500 mb-2 block">
+                                        Format
+                                    </label>
+
+                                    <select
+                                        value={format}
+                                        onChange={(e) => setFormat(e.target.value)}
+                                        className="bg-neutral-900 border border-neutral-800 text-sm rounded-lg px-4 py-2.5 text-neutral-200"
+                                    >
+                                        <option value="png">PNG</option>
+                                        <option value="jpeg">JPEG</option>
+                                        <option value="webp">WEBP</option>
+                                        <option value="avif">AVIF</option>
+                                        <option value="tiff">TIFF</option>
+                                    </select>
+
+                                </div>
+
+                            )}
+
+                            {operation === "resize" && (
+
+                                <div className="grid grid-cols-2 gap-4">
+
+                                    <div>
+
+                                        <label className="text-[10px] uppercase tracking-widest font-bold text-neutral-500 mb-2 block">
+                                            Width
+                                        </label>
+
+                                        <input
+                                            type="number"
+                                            value={width}
+                                            onChange={(e) => setWidth(Number(e.target.value))}
+                                            className="bg-neutral-900 border border-neutral-800 text-sm rounded-lg px-4 py-2.5 text-neutral-200 w-full"
+                                        />
+
+                                    </div>
+
+                                    <div>
+
+                                        <label className="text-[10px] uppercase tracking-widest font-bold text-neutral-500 mb-2 block">
+                                            Height
+                                        </label>
+
+                                        <input
+                                            type="number"
+                                            value={height}
+                                            onChange={(e) => setHeight(Number(e.target.value))}
+                                            className="bg-neutral-900 border border-neutral-800 text-sm rounded-lg px-4 py-2.5 text-neutral-200 w-full"
+                                        />
+
+                                    </div>
+
+                                </div>
+
+                            )}
+
+                            {/* Process Button */}
+
+                            <button
+                                onClick={handleProcess}
+                                disabled={loading}
+                                className={cn(
+                                    "w-full h-12 px-10 rounded-lg font-bold text-sm transition-all duration-200",
+                                    "bg-white text-black hover:bg-neutral-200 active:scale-95",
+                                    "disabled:bg-neutral-800 disabled:text-neutral-500"
+                                )}
+                            >
+                                Process & Download
+                            </button>
+
+                        </motion.div>
+
+                    )}
+
+                </div>
 
             </div>
 
-            {/* Dynamic Inputs */}
-
-            {operation === "compress" && (
-
-                <div className="space-y-2">
-
-                    <label className="text-sm text-gray-400">
-                        Quality: {quality}
-                    </label>
-
-                    <input
-                        type="range"
-                        min="1"
-                        max="100"
-                        value={quality}
-                        onChange={(e) =>
-                            setQuality(Number(e.target.value))
-                        }
-                        className="w-full"
-                    />
-
-                </div>
-            )}
-
-            {operation === "convert" && (
-
-                <div className="space-y-2">
-
-                    <label className="text-sm text-gray-400">
-                        Output Format
-                    </label>
-
-                    <select
-                        value={format}
-                        onChange={(e) => setFormat(e.target.value)}
-                        className="w-full p-3 rounded-lg bg-neutral-900 border border-neutral-700 text-white"
-                    >
-                        <option value="png">PNG</option>
-                        <option value="jpeg">JPEG</option>
-                        <option value="webp">WEBP</option>
-                        <option value="avif">AVIF</option>
-                        <option value="tiff">TIFF</option>
-                    </select>
-
-                </div>
-            )}
-
-            {operation === "resize" && (
-
-                <div className="grid grid-cols-2 gap-4">
-
-                    <div className="space-y-2">
-                        <label className="text-sm text-gray-400">
-                            Width
-                        </label>
-
-                        <input
-                            type="number"
-                            value={width}
-                            onChange={(e) =>
-                                setWidth(Number(e.target.value))
-                            }
-                            className="w-full p-3 rounded-lg bg-neutral-900 border border-neutral-700 text-white"
-                        />
-                    </div>
-
-                    <div className="space-y-2">
-                        <label className="text-sm text-gray-400">
-                            Height
-                        </label>
-
-                        <input
-                            type="number"
-                            value={height}
-                            onChange={(e) =>
-                                setHeight(Number(e.target.value))
-                            }
-                            className="w-full p-3 rounded-lg bg-neutral-900 border border-neutral-700 text-white"
-                        />
-                    </div>
-
-                </div>
-            )}
-
-            {/* File Upload */}
-
-            <input
-                type="file"
-                multiple
-                accept="image/*"
-                onChange={handleFileChange}
-                className="block w-full text-sm text-gray-400"
-            />
-
-            {/* Process Button */}
-
-            <button
-                onClick={handleUpload}
-                disabled={loading || files.length === 0}
-                className="w-full py-3 rounded-lg bg-white text-black font-semibold hover:bg-gray-200 disabled:opacity-50"
-            >
-                {loading ? "Processing Images..." : "Process Images"}
-            </button>
-
-        </div>
-    )
+        </main>
+    );
 }
