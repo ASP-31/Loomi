@@ -3,19 +3,21 @@ import { blurBrushService } from "../services/blur.service";
 
 export const blurBrushController = async (req: Request, res: Response) => {
     try {
-        const image = req.file;
-
-        if (!image) {
-            return res.status(400).json({ error: "Image is required" });
+        if (!req.file) {
+            return res.status(400).json({ error: "No file uploaded" });
         }
 
-        const result = await blurBrushService(image.buffer);
+        if (!req.file.mimetype.startsWith("image/")) {
+            return res.status(400).json({ error: "File must be an image" });
+        }
 
-        res.set("Content-Type", "image/png");
-        res.send(result);
+        const output = await blurBrushService(req.file.buffer);
+
+        res.set("Content-Type", "image/*");
+        res.send(output);
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: "Blur brush processing failed" });
+        res.status(500).json({ error: "Blur processing failed" });
     }
 };

@@ -1,10 +1,17 @@
 import sharp from "sharp";
 
-export const blurBrushService = async (imageBuffer: Buffer) => {
-    const blurredImage = await sharp(imageBuffer)
+export const blurBrushService = async (buffer: Buffer) => {
+
+    const image = sharp(buffer);
+
+    const metadata = await image.metadata();
+
+    const format = metadata.format || "png";
+
+    const blurred = await image
         .blur(15)
-        .png()
+        .toFormat(format as keyof sharp.FormatEnum)
         .toBuffer();
 
-    return blurredImage;
+    return blurred;
 };
