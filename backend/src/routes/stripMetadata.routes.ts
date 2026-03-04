@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { stripMetadataController } from "../controllers/stripMetadata.controller";
-import upload from "../middleware/upload.middleware";
+import { upload } from "../middleware/upload.middleware";
 
 const router = Router();
 
