@@ -55,6 +55,14 @@ Currently in active development.
 - Python FastAPI microservice
 - Node ↔ ML service communication
 
+### 📦 Bulk Image Processor
+- Process multiple images simultaneously
+- Supports compress, resize, convert, and metadata stripping
+- Multi-file drag & drop upload
+- Dynamic operation controls
+- Downloads processed images as a ZIP archive
+
+
 
 ---
 
@@ -80,13 +88,6 @@ Currently in active development.
 - Python
 - Background removal model
 - Isolated microservice architecture
-
-### 📦 Bulk Image Processor
-- Process multiple images simultaneously
-- Supports compress, resize, convert, and metadata stripping
-- Multi-file drag & drop upload
-- Dynamic operation controls
-- Downloads processed images as a ZIP archive
 
 ---
 
