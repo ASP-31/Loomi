@@ -50,8 +50,12 @@ export default function ToolsPage() {
             color: "rgba(163,163,163,1)",
             label: "Blur Tool",
             href: "/tools/blur"
+        },
+        {icon: <ImageOff className="w-6 h-6" />,
+            color: "rgba(163,163,163,1)",
+            label: "Filter Tool",
+            href: "/tools/filters"
         }
-
     ];
 
     return (
