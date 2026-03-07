@@ -6,6 +6,8 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { MorphingSquare } from "@/components/ui/morphing-square";
 import { Copy } from "lucide-react";
+import ArrowNarrowLeftIcon from "@/components/ui/arrow-narrow-left-icon";
+import { useRouter } from "next/navigation";
 
 const API_URL =
     process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
@@ -14,6 +16,7 @@ export default function AsciiTool() {
     const [file, setFile] = useState<File | null>(null);
     const [ascii, setAscii] = useState("");
     const [loading, setLoading] = useState(false);
+    const router = useRouter();
 
     const handleFileChange = (files: File[]) => {
         if (!files.length) {
@@ -82,14 +85,27 @@ export default function AsciiTool() {
             )}
 
             <div className="mx-auto w-full max-w-4xl">
+
                 {/* Header */}
-                <header className="mb-12">
-                    <h1 className="text-4xl font-bold tracking-tighter text-white">
-                        Image → ASCII
-                    </h1>
-                    <p className="mt-2 text-neutral-400">
-                        Convert images into ASCII art.
-                    </p>
+                <header className="mb-12 flex items-start gap-4">
+
+                    <button
+                        onClick={() => router.back()}
+                        className="group flex items-center justify-center w-10 h-10"
+                    >
+                        <ArrowNarrowLeftIcon className="w-5 h-5 text-neutral-400 group-hover:text-white transition-colors duration-200" />
+                    </button>
+
+                    <div>
+                        <h1 className="text-4xl font-bold tracking-tighter text-white">
+                            Image → ASCII
+                        </h1>
+
+                        <p className="mt-2 text-neutral-400">
+                            Convert images into ASCII art.
+                        </p>
+                    </div>
+
                 </header>
 
                 {/* Tool container */}
